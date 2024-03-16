@@ -9,10 +9,9 @@ import {
 
 function main(request: Request) {
   return json({
-    type: InteractionResponseTypes.Pong,
-    // type: InteractionResponseTypes.ChannelMessageWithSource,
+    type: InteractionResponseTypes.Pong, // ChannelMessageWithSource
     data: {
-      content: JSON.stringify(request),
+      content: JSON.stringify(request.body),
     },
   });
 }
@@ -21,9 +20,15 @@ const travis = createBot({
   token: Deno.env.get("DISCORD_TOKEN"),
   intents: Intents.Guilds | Intents.GuildMessages,
   events: {
-    ready() {
-      serve({ "/": main });
+    interactionCreate() {
+      return json({
+        type: InteractionResponseTypes.ChannelMessageWithSource,
+        data: {
+          content: "Hello world",
+        },
+      });
     },
+    // ready() {
   },
 });
 
