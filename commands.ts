@@ -16,7 +16,7 @@ const response = await fetch(url, {
   body: JSON.stringify([
     {
       name: "genworld",
-      description: "Randomly generate a world based on book 02",
+      description: "Randomly generate a world based on book 03",
       type: 1,
     },
   ]),

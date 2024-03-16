@@ -1,5 +1,4 @@
-import { json, serve } from "https://deno.land/x/sift@0.6.0/mod.ts";
-import { camelize } from "https://deno.land/x/camelize@2.0.0/mod.ts";
+import { genWorld } from "./lib/worlds.ts";
 import {
   Intents,
   InteractionResponseTypes,
@@ -7,28 +6,29 @@ import {
   startBot,
 } from "https://deno.land/x/discordeno@18.0.1/mod.ts";
 
-function main(request: Request) {
-  return json({
-    type: InteractionResponseTypes.Pong, // ChannelMessageWithSource
-    data: {
-      content: JSON.stringify(request.body),
-    },
-  });
-}
-
 const travis = createBot({
   token: Deno.env.get("DISCORD_TOKEN"),
   intents: Intents.Guilds | Intents.GuildMessages,
   events: {
-    interactionCreate() {
-      return json({
-        type: InteractionResponseTypes.ChannelMessageWithSource,
-        data: {
-          content: "Hello world",
-        },
-      });
+    async interactionCreate(bot, interaction) {
+      const respond = async (content) =>
+        await bot.helpers.sendInteractionResponse(
+          interaction.id,
+          interaction.token,
+          {
+            type: InteractionResponseTypes.ChannelMessageWithSource,
+            data: { content },
+          },
+        );
+      switch (interaction.data?.name) {
+        case "genworld":
+          respond(genWorld().join("\n"));
+          break;
+      }
     },
-    // ready() {
+    ready() {
+      console.log("ready");
+    },
   },
 });
 
