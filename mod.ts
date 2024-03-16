@@ -9,7 +9,7 @@ import {
 
 function main(request: Request) {
   return json({
-    type: InteractionResponseTypes.ChannelMessageWithSource,,
+    type: InteractionResponseTypes.ChannelMessageWithSource,
     data: {
       content: "hello world",
     },
