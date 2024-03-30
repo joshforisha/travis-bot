@@ -1,4 +1,11 @@
-import { between, clamp, roll, toRating } from "./utilities.ts";
+import {
+  between,
+  clamp,
+  formatNumber,
+  rand,
+  roll,
+  toRating,
+} from "./utilities.ts";
 
 interface World {
   atmosphere: number;
@@ -138,6 +145,9 @@ export function genWorld(): [string] {
   const atmosphere = size > 0 ? clamp(0, roll() - 7 + size, 12) : 0;
   const hydrographics = genHydrographics({ atmosphere, size });
   const population = roll() - 2;
+  const exactPopulation = formatNumber(
+    rand(10, 99) * Math.pow(10, Math.max(0, population - 1)),
+  );
   const government = clamp(0, roll() - 7 + population, 13);
   const lawLevel = clamp(0, roll() - 7 + government, 9);
   const techLevel = genTechLevel({
@@ -149,22 +159,24 @@ export function genWorld(): [string] {
     starport,
   });
   return [
-    "**" + [
-      starport,
-      size,
-      atmosphere,
-      hydrographics,
-      population,
-      government,
-      lawLevel,
-    ]
-      .map(toRating)
-      .join("") + `-${toRating(techLevel)}**`,
+    "**" +
+      [
+        starport,
+        size,
+        atmosphere,
+        hydrographics,
+        population,
+        government,
+        lawLevel,
+      ]
+        .map(toRating)
+        .join("") +
+      `-${toRating(techLevel)}**`,
     `*Starport:* ${starportText(starport)}.`,
     `*Size:* ${sizeText(size)}.`,
     `*Atmosphere:* ${atmosphereText(atmosphere)}.`,
     `*Hydrographics:* ${hydrographics * 10}%.`,
-    `*Population:* ${Math.pow(10, population)}+.`,
+    `*Population:* ${exactPopulation}.`,
     `*Government:* ${governmentText(government)}.`,
   ];
 }
@@ -203,7 +215,7 @@ function governmentText(government: number): string {
 }
 
 function sizeText(size: number): string {
-  if (size === 0) return 'Asteroid/planetoid complex';
+  if (size === 0) return "Asteroid/planetoid complex";
   return `${size * 1000}mi diameter`;
 }
 

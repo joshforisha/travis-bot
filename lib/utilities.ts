@@ -33,8 +33,16 @@ export function clamp(min: number, x: number, max: number): number {
   return Math.max(min, Math.min(max, x));
 }
 
-export function formatCredits(num: number): string {
+export function formatNumber(num: number): string {
   return Intl.NumberFormat().format(num);
+}
+
+export function fromRating(rating: string): number {
+  return parseInt(rating, 36);
+}
+
+export function random(min: number, max: number): number {
+  return Math.floor(min + Math.random() * (max - min) + 1);
 }
 
 export function roll(dice: number = 2): number {
@@ -45,58 +53,21 @@ export function roll(dice: number = 2): number {
   return total;
 }
 
-export function toRating(num: number): string {
-  if (num < 10) return num.toString(10);
-  switch (num) {
-    case 10:
-      return "A";
-    case 11:
-      return "B";
-    case 12:
-      return "C";
-    case 13:
-      return "D";
-    case 14:
-      return "E";
-    case 15:
-      return "F";
-    case 16:
-      return "G";
-    case 17:
-      return "H";
-    case 18:
-      return "J";
-    case 19:
-      return "K";
-    case 20:
-      return "L";
-    case 21:
-      return "M";
-    case 22:
-      return "N";
-    case 23:
-      return "P";
-    case 24:
-      return "Q";
-    case 25:
-      return "R";
-    case 26:
-      return "S";
-    case 27:
-      return "T";
-    case 28:
-      return "U";
-    case 29:
-      return "V";
-    case 30:
-      return "W";
-    case 31:
-      return "X";
-    case 32:
-      return "Y";
-    case 33:
-      return "Z";
+export function takeRandom<T>(xs: T[]): T {
+  return xs[Math.floor(Math.random() * xs.length)];
+}
+
+export function takeWeightedRandom<T>(xs: Array<[number, T]>): T {
+  const total = xs.reduce((ws, [w]) => ws + w, 0);
+  const target = random(0, total);
+  for (let i = 0, j = 0; i < target; i++) {
+    j += xs[i][0];
+    if (target <= j) return xs[i][1];
   }
+}
+
+export function toRating(num: number): string {
+  return num.toString(36).toUpperCase();
 }
 
 export function toUPP(
